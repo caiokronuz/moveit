@@ -27,3 +27,10 @@
 .profileContainer div p img{
     margin-right: 0.5rem;
 }
+
+.profileContainer div button{
+    margin-top: 0.5em;
+    background: none;
+    border: none;
+    color: red;
+}

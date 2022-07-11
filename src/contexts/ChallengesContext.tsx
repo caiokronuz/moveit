@@ -2,6 +2,7 @@ import {createContext, useState, ReactNode, useEffect} from 'react';
 import Cookies from 'js-cookie';
 import challenges from '../../challenges.json';
 import { LevelUpModal } from '../components/LevelUpModal';
+import api from '../services/api';
 
 export const ChallengesContext = createContext({} as ChallengesContextData);
 
@@ -12,6 +13,7 @@ interface Challenge{
 }
 
 interface ChallengesContextData{
+    name: string;
     level: number; 
     currentExperience: number; 
     challengesCompleted: number;
@@ -26,23 +28,41 @@ interface ChallengesContextData{
 
 interface ChallengesProviderProps{
     children: ReactNode;
+    id: number;
+    name: string;
+    email: string;
     level: number;
     currentExperience: number;
     challengesCompleted: number;
+    token: string;
 }
 
 export function ChallengesProvider({
     children, 
     ...rest
 }:ChallengesProviderProps){
-    const [level, setLevel] = useState(rest.level ?? 1)
-    const [currentExperience, setCurrentExperience] = useState(rest.currentExperience ?? 0);
-    const [challengesCompleted, setChallengesCompleted] = useState(rest.challengesCompleted ?? 0);
+    const [id] = useState(rest.id)
+    const [name] = useState(rest.name)
+    const [email] = useState(rest.email)
+    const [token] = useState(rest.token);
+    const [level, setLevel] = useState<number>(rest.level)
+    const [currentExperience, setCurrentExperience] = useState<number>(rest.currentExperience);
+    const [challengesCompleted, setChallengesCompleted] = useState<number>(rest.challengesCompleted);
 
     const [activeChallenge, setActiveChallenge] = useState(null);
     const [isLevelUpModalOpen, setIsLevelUpModalOpen] = useState(false);
 
     const experienceToNextLevel = Math.pow((level + 1) * 4,2)
+
+    async function updateStatus(level, currentExperience, challengesCompleted, token){
+        await api.put('/status', {
+            level,
+            experience: currentExperience,
+            challenges_completed: challengesCompleted,
+        }, {
+            headers: {Authorization: `Bearer ${token}`}
+        })
+    }
 
     useEffect(() => {
         Notification.requestPermission();
@@ -52,6 +72,8 @@ export function ChallengesProvider({
         Cookies.set('level', String(level))
         Cookies.set('currentExperience', String(currentExperience))
         Cookies.set('challengesCompleted', String(challengesCompleted))
+
+        updateStatus(level, currentExperience, challengesCompleted, token);
     }, [level, currentExperience, challengesCompleted])
 
     function levelUp(){
@@ -104,6 +126,7 @@ export function ChallengesProvider({
     return(
         <ChallengesContext.Provider 
             value={{
+                name,
                 level, 
                 currentExperience, 
                 challengesCompleted, 
