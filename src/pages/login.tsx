@@ -1,11 +1,13 @@
 import Router from 'next/router';
 import Link from 'next/link';
+import Head from 'next/head';
 
 import {FormEvent, useState} from 'react';
 import Cookies from 'js-cookie';
 import api from '../services/api';
 
 import styles from '../styles/pages/Login.module.css';
+import { toast } from 'react-toastify';
 
 export default function loginPage(){
 
@@ -15,13 +17,10 @@ export default function loginPage(){
     async function onLogin(e:FormEvent){
         e.preventDefault();
 
-        //status[0]
-        //level, experience, challenges_completed
-
-        //user[0]
-        //id, name, email
-
-        //token
+        if(!email || !password){
+            toast.error("Preencha os dados corretamente.")
+            return;
+        }
 
         try{
             const {data} = await api.post('login', {
@@ -39,14 +38,18 @@ export default function loginPage(){
 
             Cookies.set("token", data.token);
 
+            toast.success(`Seja bem vindo, ${data.user[0].name}`)
             return Router.push("/")
         }catch(err){
-            alert(err.response.data.error)
+            toast.error(err.response.data.error)
         }
     }
 
     return(
         <div className={styles.container}>
+            <Head>
+                <title>Login | Move.it</title>
+            </Head>
             <main>
                 <div className={styles.logo}>
                     <h1>Move.it</h1>

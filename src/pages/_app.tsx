@@ -1,9 +1,13 @@
-import { ChallengesProvider } from '../contexts/ChallengesContext';
+import { ToastContainer } from 'react-toastify';
 import '../styles/global.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 function MyApp({ Component, pageProps }) {
   return(
-    <Component {...pageProps} />
+    <>
+      <Component {...pageProps} />
+      <ToastContainer autoClose={3000} />
+    </>
   );
 }
 

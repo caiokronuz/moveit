@@ -1,11 +1,13 @@
 import Router from 'next/router';
 import Link from 'next/link';
+import Head from 'next/head';
 
 import { FormEvent, useState } from 'react';
 import api from '../services/api';
 import Cookies from 'js-cookie';
 
 import styles from '../styles/pages/Login.module.css';
+import { toast } from 'react-toastify';
 
 export default function registerPage(){
     
@@ -17,8 +19,13 @@ export default function registerPage(){
     async function onRegister(e: FormEvent){
         e.preventDefault();
 
+        if(!name || !email || !password || !password2){
+            toast.error("Preencha os dados corretamente.")
+            return;
+        }
+
         if(password != password2){
-            alert("ERRO! As senhas não coincidem.")
+            toast.error("ERRO! As senhas não coincidem.")
             return;
         }
 
@@ -29,7 +36,7 @@ export default function registerPage(){
                 password
             })
 
-            alert("Registro efetuado com sucesso")
+            toast.success("Registro efetuado com sucesso")
 
             Cookies.set("id", data.user[0].id);
             Cookies.set("name", data.user[0].name);
@@ -44,12 +51,15 @@ export default function registerPage(){
             return Router.push("/");
 
         }catch(err){
-            alert(err.response.data.error)
+            toast.error(err.response.data.error)
         }
     }
 
     return(
         <div className={styles.container}>
+            <Head>
+                <title>Registro | Move.it</title>
+            </Head>
             <main>
                 <div className={styles.logo}>
                     <h1>Move.it</h1>
