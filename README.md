@@ -1,6 +1,6 @@
-# Moveit
+# Move.it
 
-Moveit é um website que visa ajudar pessoas que trabalham no computador a serem mais saudáveis. A aplicação segue o método de pomodoro, ela nos da um ciclo (25 minutos) e no fim desse ciclo nos da um desafio que é algum exercicio simples como esticar as pernas ou braços, descançar os olhos, etc. Ao completar um desafio o usuário ganha Exp e como se fosse um RPG o mesmo sobe de level!
+Move.it é um website que visa ajudar pessoas que trabalham no computador a serem mais saudáveis. A aplicação segue o método de pomodoro, ela nos da um ciclo (25 minutos) e no fim desse ciclo nos da um desafio que é algum exercicio simples como esticar as pernas ou braços, descançar os olhos, etc. Ao completar um desafio o usuário ganha Exp e como se fosse um RPG o mesmo sobe de level!
 
 # Snapshots
 
