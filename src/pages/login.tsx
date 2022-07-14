@@ -13,12 +13,15 @@ export default function loginPage(){
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     async function onLogin(e:FormEvent){
         e.preventDefault();
+        setIsLoading(true);
 
         if(!email || !password){
             toast.error("Preencha os dados corretamente.")
+            setIsLoading(false);
             return;
         }
 
@@ -58,7 +61,7 @@ export default function loginPage(){
                     <form onSubmit={onLogin}>
                         <input type="email" name="email" id="email" placeholder='Email' onChange={e => setEmail(e.target.value)}/>
                         <input type="password" name="password" id="password" placeholder='Senha' onChange={e => setPassword(e.target.value)}/>
-                        <button type="submit">Logar</button>
+                        <button type="submit">{isLoading ? "Carregando...": "Logar"}</button>
                         <p>Não possui uma conta? <Link href="/register">Clique aqui!</Link></p>
                     </form>
                 </div>

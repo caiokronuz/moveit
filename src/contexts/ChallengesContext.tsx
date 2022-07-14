@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import challenges from '../../challenges.json';
 import { LevelUpModal } from '../components/LevelUpModal';
 import api from '../services/api';
+import { toast } from 'react-toastify';
 
 export const ChallengesContext = createContext({} as ChallengesContextData);
 
@@ -24,6 +25,7 @@ interface ChallengesContextData{
     completeChallenge: () => void;
     experienceToNextLevel: number;
     closeLevelUpModal: () => void;
+    isLoading: boolean;
 }
 
 interface ChallengesProviderProps{
@@ -35,6 +37,7 @@ interface ChallengesProviderProps{
     currentExperience: number;
     challengesCompleted: number;
     token: string;
+    isLoading: boolean;
 }
 
 export function ChallengesProvider({
@@ -51,6 +54,7 @@ export function ChallengesProvider({
 
     const [activeChallenge, setActiveChallenge] = useState(null);
     const [isLevelUpModalOpen, setIsLevelUpModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const experienceToNextLevel = Math.pow((level + 1) * 4,2)
 
@@ -104,7 +108,10 @@ export function ChallengesProvider({
         setActiveChallenge(null)
     }
 
-    function completeChallenge(){
+    async function completeChallenge(){
+        
+        setIsLoading(true);
+
         if(!activeChallenge){
             return;
         }
@@ -119,8 +126,17 @@ export function ChallengesProvider({
         }
 
         setCurrentExperience(finalExperience)
-        setActiveChallenge(null);
         setChallengesCompleted(challengesCompleted + 1)
+
+        try{
+            await updateStatus(level, currentExperience, challengesCompleted, token);
+            toast.success("Informações salvas com sucesso!")
+        }catch(err){
+            toast.error("Erro ao salvar seus dados")
+        }finally{
+            setIsLoading(false);
+            setActiveChallenge(null);
+        }
     }
 
     return(
@@ -137,6 +153,7 @@ export function ChallengesProvider({
                 completeChallenge,
                 experienceToNextLevel,
                 closeLevelUpModal,
+                isLoading
                 }}
             >
 

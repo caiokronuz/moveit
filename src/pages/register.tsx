@@ -16,16 +16,21 @@ export default function registerPage(){
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
 
+    const [isLoading, setIsLoading] = useState(false);
+
     async function onRegister(e: FormEvent){
         e.preventDefault();
+        setIsLoading(true);
 
         if(!name || !email || !password || !password2){
             toast.error("Preencha os dados corretamente.")
+            setIsLoading(false);
             return;
         }
 
         if(password != password2){
             toast.error("ERRO! As senhas não coincidem.")
+            setIsLoading(false);
             return;
         }
 
@@ -70,7 +75,7 @@ export default function registerPage(){
                         <input type="email" name="email" id="email" placeholder='Seu melhor email' onChange={e => setEmail(e.target.value)}/>
                         <input type="password" name="password" id="password" placeholder='Sua senha' onChange={e => setPassword(e.target.value)}/>
                         <input type="password" name="password2" id="password2" placeholder='Repita sua senha' onChange={e => setPassword2(e.target.value)}/>
-                        <button type="submit">Registrar</button>
+                        <button type="submit">{isLoading ? "Carregando..." : "Registrar"}</button>
                         <p>Já possui uma conta? <Link href="/login">Clique aqui!</Link></p>
                     </form>
                 </div>
