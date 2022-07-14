@@ -37,7 +37,6 @@ interface ChallengesProviderProps{
     currentExperience: number;
     challengesCompleted: number;
     token: string;
-    isLoading: boolean;
 }
 
 export function ChallengesProvider({
