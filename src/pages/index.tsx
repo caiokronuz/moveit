@@ -63,6 +63,7 @@ export default function Home(props: HomeProps) {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   //Retorna dados salvos nos cookies
+ /*
   const {id, name, email, level, currentExperience, challengesCompleted, token} = ctx.req.cookies;
 
   if(!token){
@@ -86,5 +87,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       challengesCompleted: Number(challengesCompleted),
       token: String(token),
     }
-  }
+  }*/
 }
