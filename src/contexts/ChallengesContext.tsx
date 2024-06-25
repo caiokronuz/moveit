@@ -1,4 +1,4 @@
-import {createContext, useState, ReactNode, useEffect} from 'react';
+import { createContext, useState, ReactNode, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import challenges from '../../challenges.json';
 import { LevelUpModal } from '../components/LevelUpModal';
@@ -7,20 +7,20 @@ import { toast } from 'react-toastify';
 
 export const ChallengesContext = createContext({} as ChallengesContextData);
 
-interface Challenge{
+interface Challenge {
     type: 'body' | 'eye';
     description: string;
     amount: number;
 }
 
-interface ChallengesContextData{
+interface ChallengesContextData {
     name: string;
-    level: number; 
-    currentExperience: number; 
+    level: number;
+    currentExperience: number;
     challengesCompleted: number;
     levelUp: () => void;
     startNewChallenge: () => void;
-    activeChallenge: Challenge; 
+    activeChallenge: Challenge;
     resetChallenge: () => void;
     completeChallenge: () => void;
     experienceToNextLevel: number;
@@ -28,7 +28,7 @@ interface ChallengesContextData{
     isLoading: boolean;
 }
 
-interface ChallengesProviderProps{
+interface ChallengesProviderProps {
     children: ReactNode;
     id: number;
     name: string;
@@ -40,9 +40,9 @@ interface ChallengesProviderProps{
 }
 
 export function ChallengesProvider({
-    children, 
+    children,
     ...rest
-}:ChallengesProviderProps){
+}: ChallengesProviderProps) {
     const [id] = useState(rest.id)
     const [name] = useState(rest.name)
     const [email] = useState(rest.email)
@@ -55,17 +55,7 @@ export function ChallengesProvider({
     const [isLevelUpModalOpen, setIsLevelUpModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const experienceToNextLevel = Math.pow((level + 1) * 4,2)
-
-    async function updateStatus(level, currentExperience, challengesCompleted, token){
-        await api.put('/status', {
-            level,
-            experience: currentExperience,
-            challenges_completed: challengesCompleted,
-        }, {
-            headers: {Authorization: `Bearer ${token}`}
-        })
-    }
+    const experienceToNextLevel = Math.pow((level + 1) * 4, 2)
 
     useEffect(() => {
         Notification.requestPermission();
@@ -79,16 +69,31 @@ export function ChallengesProvider({
         updateStatus(level, currentExperience, challengesCompleted, token);
     }, [level, currentExperience, challengesCompleted])
 
-    function levelUp(){
+    async function updateStatus(level, currentExperience, challengesCompleted, token) {
+        try {
+            await api.put('/status', {
+                level,
+                experience: currentExperience,
+                challenges_completed: challengesCompleted,
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+
+    function levelUp() {
         setLevel(level + 1)
         setIsLevelUpModalOpen(true)
     }
 
-    function closeLevelUpModal(){
+    function closeLevelUpModal() {
         setIsLevelUpModalOpen(false);
     }
 
-    function startNewChallenge(){
+    function startNewChallenge() {
         const randomChallengeIndex = Math.floor(Math.random() * challenges.length)
         const challenge = challenges[randomChallengeIndex]
 
@@ -96,30 +101,30 @@ export function ChallengesProvider({
 
         new Audio('/notification.mp3').play();
 
-        if(Notification.permission === 'granted'){
+        if (Notification.permission === 'granted') {
             new Notification('Novo desafio!', {
                 body: `Valendo ${challenge.amount} xp!`
             })
         }
     }
 
-    function resetChallenge(){
+    function resetChallenge() {
         setActiveChallenge(null)
     }
 
-    async function completeChallenge(){
-        
+    async function completeChallenge() {
+
         setIsLoading(true);
 
-        if(!activeChallenge){
+        if (!activeChallenge) {
             return;
         }
 
-        const {amount} = activeChallenge;
+        const { amount } = activeChallenge;
 
         let finalExperience = currentExperience + amount;
 
-        if (finalExperience >= experienceToNextLevel){
+        if (finalExperience >= experienceToNextLevel) {
             finalExperience = finalExperience - experienceToNextLevel;
             levelUp();
         }
@@ -127,24 +132,24 @@ export function ChallengesProvider({
         setCurrentExperience(finalExperience)
         setChallengesCompleted(challengesCompleted + 1)
 
-        try{
+        try {
             await updateStatus(level, currentExperience, challengesCompleted, token);
             toast.success("Informações salvas com sucesso!")
-        }catch(err){
+        } catch (err) {
             toast.error("Erro ao salvar seus dados")
-        }finally{
+        } finally {
             setIsLoading(false);
             setActiveChallenge(null);
         }
     }
 
-    return(
-        <ChallengesContext.Provider 
+    return (
+        <ChallengesContext.Provider
             value={{
                 name,
-                level, 
-                currentExperience, 
-                challengesCompleted, 
+                level,
+                currentExperience,
+                challengesCompleted,
                 levelUp,
                 startNewChallenge,
                 activeChallenge,
@@ -153,8 +158,8 @@ export function ChallengesProvider({
                 experienceToNextLevel,
                 closeLevelUpModal,
                 isLoading
-                }}
-            >
+            }}
+        >
 
             {children}
             {isLevelUpModalOpen && <LevelUpModal />}

@@ -44,6 +44,7 @@ export default function loginPage(){
             toast.success(`Seja bem vindo, ${data.user[0].name}`)
             return Router.push("/")
         }catch(err){
+            console.log(err)
             toast.error(err.response.data.error)
             setIsLoading(false);
         }
