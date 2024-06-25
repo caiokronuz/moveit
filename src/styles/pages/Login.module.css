@@ -23,6 +23,7 @@
 .container main .login{
     background-color: var(--white);
     width: 80%;
+    max-width: 380px;
     height: auto;
     padding: 1em;
 
