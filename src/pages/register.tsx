@@ -43,13 +43,13 @@ export default function registerPage(){
 
             toast.success("Registro efetuado com sucesso")
 
-            Cookies.set("id", data.user[0].id);
-            Cookies.set("name", data.user[0].name);
-            Cookies.set("email", data.user[0].email);
+            Cookies.set("id", data.user.id);
+            Cookies.set("name", data.user.name);
+            Cookies.set("email", data.user.email);
 
-            Cookies.set("level", data.status[0].level);
-            Cookies.set("currentExperience", data.status[0].experience);
-            Cookies.set("challengesCompleted", data.status[0].challenges_completed);
+            Cookies.set("level", data.status.level);
+            Cookies.set("currentExperience", data.status.experience);
+            Cookies.set("challengesCompleted", data.status.challenges_completed);
 
             Cookies.set("token", data.token);
 
